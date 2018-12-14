@@ -1,28 +1,17 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
-import './App.css';
+import '@shopify/polaris/styles.css';
+import {AppProvider, Heading, ResourcePicker, Page, Card, Button} from '@shopify/polaris';
 
 class App extends Component {
-  render() {
-    return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Edit <code>src/App.js</code> and save to reload.
-          </p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-        </header>
-      </div>
-    );
-  }
+
+    render() {
+        console.log(process.env);
+        return (
+            <AppProvider apiKey={process.env.REACT_APP_API_KEY}>
+                <Heading>Collection Hero</Heading>
+            </AppProvider>
+        );
+    }
 }
 
 export default App;
