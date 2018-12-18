@@ -4,11 +4,18 @@
   "private": true,
   "dependencies": {
     "@shopify/polaris": "^3.3.0",
+    "axios": "^0.18.0",
+    "cookie": "^0.3.1",
+    "express": "^4.16.4",
+    "nonce": "^1.0.4",
     "react": "^16.6.3",
     "react-dom": "^16.6.3",
-    "react-scripts": "2.1.1"
+    "react-scripts": "2.1.1",
+    "shopify-node-api": "^1.10.0"
   },
   "scripts": {
+    "server": "nodemon --exec babel-node server/index.js",
+    "build-server": "rm -rf dist && mkdir dist && babel server/index.js -o dist/server.js",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
@@ -22,5 +29,12 @@
     "not dead",
     "not ie <= 11",
     "not op_mini all"
-  ]
+  ],
+  "devDependencies": {
+    "@babel/cli": "^7.2.0",
+    "@babel/core": "^7.2.0",
+    "@babel/node": "^7.2.0",
+    "dotenv": "^6.2.0",
+    "nodemon": "^1.18.9"
+  }
 }
