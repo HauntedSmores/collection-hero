@@ -40,5 +40,9 @@
     "dotenv": "^6.2.0",
     "http-proxy-middleware": "^0.19.1",
     "nodemon": "^1.18.9"
+  },
+  "proxy": "http://localhost:5000",
+  "nodemonConfig": {
+    "ignore": ["src/*"]
   }
 }

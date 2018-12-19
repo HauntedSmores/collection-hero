@@ -18,12 +18,17 @@ const http = axios.create({
     }
 })
 
-app.get('/api/shop', (req, res, shopify) => {
-    http.get('products.json').then(data => {
-        console.log(data);
-        res.status(200).send('Success');
-    }).catch(err => console.error(err))
+app.get('/api/products', (req, res, shopify) => {
+    http.get('products.json').then(api_response => {
+        res.status(200).json(api_response.data);
+    }).catch(err => res.status(500).send(err))
 })
+
+// app.get('/api/collections', (req, res, shopify) => {
+//     http.get('collections.json').then(api_response => {
+//         res.status(200).json(api_response.data);
+//     }).catch(err => res.status(500).send(err))
+// })
 
 app.listen(port, () => console.log(`Example app listening on port ${port}!`))
 

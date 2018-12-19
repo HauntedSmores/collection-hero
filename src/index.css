@@ -1,4 +1,4 @@
-@import '~@shopify/polaris/styles.css';
+/* @import '~@shopify/polaris/styles.css'; */
 @import './styles/tailwind.css';
 
 body {
@@ -9,7 +9,7 @@ body {
 }
 
 #root {
-  max-width: 800px;
+  max-width: 1440px;
   margin: 0 auto;
-  padding-top: 100px;
+  padding: 100px 24px 50px;
 }
