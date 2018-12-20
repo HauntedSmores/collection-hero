@@ -18,22 +18,24 @@ const http = axios.create({
     }
 })
 
-function get_products() {
-    let options = {
+function get_products(query) {
+    console.log(query)
+    const { limit, page } = query;
+    return http.get('products.json', {
         params: {
-            limit: 2
+            limit: limit ? limit: 20,
+            page: page ? page : 1
         }
-    }
-    return http.get('products.json', options)
+    })
 }
 
 function get_product_count() {
     return http.get('products/count.json')
 }
 
-app.get('/api/products', (req, res, shopify) => {
+app.get('/api/products', (req, res) => {
 
-    axios.all([get_products(), get_product_count()])
+    axios.all([get_products(req.query), get_product_count()])
         .then(axios.spread((products_res, count_res) => {
             let data = {
                 products: products_res.data.products,

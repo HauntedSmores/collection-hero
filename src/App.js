@@ -8,14 +8,41 @@ class App extends Component {
 
     state = {
         products: [],
-        count: 0
+        count: 0,
+        per_page: 12,
+        loading: true
     }
 
-    componentWillMount() {
-        axios.get('/api/products').then(res => {
+    constructor(props) {
+        super(props)
+        this.fetchProducts = this.fetchProducts.bind(this);
+    }
+
+    componentDidMount() {
+        axios.get(`/api/products?limit=${this.state.per_page}`).then(res => {
             console.log(res.data)
             this.setState(res.data)
+            this.setState({loading: false})
         })
+    }
+
+    fetchProducts(page) {
+        this.setState({loading: true})
+        console.log(page);
+
+        if (page) {
+            axios.get(`/api/products?page=${page}&limit=${this.state.per_page}`).then(res => {
+                console.log(res);
+                this.setState(res.data)
+                this.setState({loading: false})
+            })
+        } else {
+            axios.get('/api/products').then(res => {
+                console.log(res.data)
+                this.setState(res.data)
+                this.setState({loading: false})
+            })
+        }
     }
 
     render() {
@@ -23,11 +50,15 @@ class App extends Component {
             <div>
                 <h1 className="mb-2">Collection Title</h1>
 
-                <div class="flex">
+                <div className="flex">
                     <Filters/>
                     <div className="w-full">
-                        <Grid title="Products" items={ this.state.products } />
-                        <Pagination count={this.state.count}/>
+                        { this.state.loading ? <p>Loading...</p> : (
+                            <>
+                                <Grid title="Products" items={ this.state.products } />
+                                <Pagination count={this.state.count} perPage={this.state.per_page} getPage={this.fetchProducts}/>
+                            </>
+                        )}
                     </div>
                 </div>
             </div>

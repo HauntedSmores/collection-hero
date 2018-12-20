@@ -1,0 +1,19 @@
+.pagination {
+  display: flex;
+  margin: 0 -12px;
+}
+
+.pagination_item {
+  display: flex;
+  margin: 12px;
+  width: 24px;
+  height: 24px;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.pagination_item:hover {
+  background-color: grey;
+  color: white;
+}
