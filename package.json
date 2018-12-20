@@ -43,6 +43,8 @@
   },
   "proxy": "http://localhost:5000",
   "nodemonConfig": {
-    "ignore": ["src/*"]
+    "ignore": [
+      "src/*"
+    ]
   }
 }

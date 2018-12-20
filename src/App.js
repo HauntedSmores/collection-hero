@@ -1,18 +1,20 @@
 import React, { Component } from 'react'
 import Grid from './components/Grid'
 import Filters from './components/Filters'
+import Pagination from './components/Pagination'
 import axios from 'axios'
 
 class App extends Component {
 
     state = {
-        products: []
+        products: [],
+        count: 0
     }
 
     componentWillMount() {
         axios.get('/api/products').then(res => {
-            console.log(res.data.products)
-            this.setState({products: res.data.products})
+            console.log(res.data)
+            this.setState(res.data)
         })
     }
 
@@ -23,7 +25,10 @@ class App extends Component {
 
                 <div class="flex">
                     <Filters/>
-                    <Grid title="Products" items={ this.state.products } />
+                    <div className="w-full">
+                        <Grid title="Products" items={ this.state.products } />
+                        <Pagination count={this.state.count}/>
+                    </div>
                 </div>
             </div>
         )

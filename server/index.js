@@ -18,17 +18,30 @@ const http = axios.create({
     }
 })
 
-app.get('/api/products', (req, res, shopify) => {
-    http.get('products.json').then(api_response => {
-        res.status(200).json(api_response.data);
-    }).catch(err => res.status(500).send(err))
-})
+function get_products() {
+    let options = {
+        params: {
+            limit: 2
+        }
+    }
+    return http.get('products.json', options)
+}
 
-// app.get('/api/collections', (req, res, shopify) => {
-//     http.get('collections.json').then(api_response => {
-//         res.status(200).json(api_response.data);
-//     }).catch(err => res.status(500).send(err))
-// })
+function get_product_count() {
+    return http.get('products/count.json')
+}
+
+app.get('/api/products', (req, res, shopify) => {
+
+    axios.all([get_products(), get_product_count()])
+        .then(axios.spread((products_res, count_res) => {
+            let data = {
+                products: products_res.data.products,
+                count: count_res.data.count
+            }
+            res.status(200).json(data)
+        })).catch(err => res.status(500).send(err))
+})
 
 app.listen(port, () => console.log(`Example app listening on port ${port}!`))
 
