@@ -1,5 +1,6 @@
 .pagination {
   display: flex;
+  align-items: center; 
   margin: 0 -12px;
 }
 
@@ -13,7 +14,8 @@
   cursor: pointer;
 }
 
-.pagination_item:hover {
+.pagination_item:hover,
+.pagination_item_active {
   background-color: grey;
   color: white;
 }

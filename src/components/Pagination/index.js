@@ -6,12 +6,12 @@ class Pagination extends Component {
 
     constructor(props) {
         super(props)
+        
         let pages = Math.ceil(props.count / props.perPage)
         this.state = {
-            pages: []
+            pages: [],
+            active: this.props.activePage
         }
-
-        console.log(pages)
 
         for (let i = 1; i <= pages; i++) {
             this.state.pages.push(i)
@@ -19,19 +19,34 @@ class Pagination extends Component {
 
     }
 
+    setPage(page) {
+        this.props.getPage(page)
+    }
+
     render() {
         const { pages } = this.state
         if (pages.length > 1) {
+
             return (
                 <div className={styles.pagination}>
-                    {
-                        pages.map(page => {
-                            return (
-                                <p className={styles.pagination_item}
-                                    onClick={ this.props.getPage.bind(this, page) }>{ page }</p>
-                            )
-                        })
-                    }
+                    { this.state.active > 1 ? <p onClick={ this.setPage.bind(this, this.state.active - 1) }>Previous</p> : null}
+                    <>
+                        {
+                            pages.map(page => {
+                                let page_class = page === this.state.active ? 
+                                    [styles.pagination_item, styles.pagination_item_active].join(' ') :
+                                    styles.pagination_item
+
+                                return (
+                                    <p className={ page_class }
+                                        onClick={ this.setPage.bind(this, page) }>
+                                        { page }
+                                    </p>
+                                )
+                            })
+                        }
+                    </>
+                    { this.state.active != this.state.pages.length ? <p onClick={ this.setPage.bind(this, this.state.active + 1) }>Next</p> : null}
                 </div>
             )
         } else return null

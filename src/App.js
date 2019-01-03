@@ -1,67 +1,20 @@
 import React, { Component } from 'react'
-import Grid from './components/Grid'
-import Filters from './components/Filters'
-import Pagination from './components/Pagination'
+import { BrowserRouter, Route, Link } from "react-router-dom";
+import Collection from './components/Collection'
+import Dashboard from './components/Dashboard'
 import axios from 'axios'
 
 class App extends Component {
 
-    state = {
-        products: [],
-        count: 0,
-        per_page: 12,
-        loading: true
-    }
-
-    constructor(props) {
-        super(props)
-        this.fetchProducts = this.fetchProducts.bind(this);
-    }
-
-    componentDidMount() {
-        axios.get(`/api/products?limit=${this.state.per_page}`).then(res => {
-            console.log(res.data)
-            this.setState(res.data)
-            this.setState({loading: false})
-        })
-    }
-
-    fetchProducts(page) {
-        this.setState({loading: true})
-        console.log(page);
-
-        if (page) {
-            axios.get(`/api/products?page=${page}&limit=${this.state.per_page}`).then(res => {
-                console.log(res);
-                this.setState(res.data)
-                this.setState({loading: false})
-            })
-        } else {
-            axios.get('/api/products').then(res => {
-                console.log(res.data)
-                this.setState(res.data)
-                this.setState({loading: false})
-            })
-        }
-    }
-
     render() {
         return (
-            <div>
-                <h1 className="mb-2">Collection Title</h1>
-
-                <div className="flex">
-                    <Filters/>
-                    <div className="w-full">
-                        { this.state.loading ? <p>Loading...</p> : (
-                            <>
-                                <Grid title="Products" items={ this.state.products } />
-                                <Pagination count={this.state.count} perPage={this.state.per_page} getPage={this.fetchProducts}/>
-                            </>
-                        )}
-                    </div>
-                </div>
-            </div>
+            <>
+                <h1 className="mb-2">Collection Hero</h1>
+                <Link to="/">Dashboard</Link>
+                <Link to="/collection">Collection</Link>
+                <Route exact path='/' component={Dashboard}/>
+                <Route path='/collection' component={Collection}/>
+            </>
         )
     }
 }
