@@ -7,10 +7,10 @@ class Grid extends Component {
         return (
             <div className={styles.grid}>
                 {
-                    this.props.items.map(item => {
+                    this.props.items.map((item, index) => {
                         return (
-                            <a href={ `/products/${item.handle}` }>
-                                <img src={ item.image.src } />
+                            <a key={ index } href={ `/products/${item.handle}` }>
+                                <img src={ item.image.src } alt={ item.image.src }/>
                                 <p>{ item.title }</p>
                             </a>
                         )

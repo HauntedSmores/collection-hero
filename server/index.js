@@ -71,6 +71,8 @@ app.get('/api/sync', (req, res) => {
                 products = products.concat(item.data.products)
             })
 
+            console.log(products)
+
             products = [].concat(...products.map(item => [
                 { index: { _index: 'products', _type: 'product', _id: item.id } },
                 item
@@ -93,7 +95,7 @@ app.get('/api/sync', (req, res) => {
 
 app.get('/api/mapping', (req, res) => {
     es_client.indices.getMapping({index: 'products'}).then(body => {
-        res.status(200).send(body)
+        res.status(200).send(body.products.mappings)
     })
 })
 

@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
 import styles from './Pagination.module.css'
-import axios from 'axios'
 
 class Pagination extends Component {
 
@@ -32,13 +31,13 @@ class Pagination extends Component {
                     { this.state.active > 1 ? <p onClick={ this.setPage.bind(this, this.state.active - 1) }>Previous</p> : null}
                     <>
                         {
-                            pages.map(page => {
+                            pages.map((page, index) => {
                                 let page_class = page === this.state.active ? 
                                     [styles.pagination_item, styles.pagination_item_active].join(' ') :
                                     styles.pagination_item
 
                                 return (
-                                    <p className={ page_class }
+                                    <p key={index} className={ page_class }
                                         onClick={ this.setPage.bind(this, page) }>
                                         { page }
                                     </p>
@@ -46,7 +45,7 @@ class Pagination extends Component {
                             })
                         }
                     </>
-                    { this.state.active != this.state.pages.length ? <p onClick={ this.setPage.bind(this, this.state.active + 1) }>Next</p> : null}
+                    { this.state.active !== this.state.pages.length ? <p onClick={ this.setPage.bind(this, this.state.active + 1) }>Next</p> : null}
                 </div>
             )
         } else return null

@@ -1,8 +1,9 @@
 import React, { Component } from 'react'
-import { BrowserRouter, Route, Link } from "react-router-dom";
+import { Route, Link } from "react-router-dom";
 import Collection from './components/Collection'
 import Dashboard from './components/Dashboard'
-import axios from 'axios'
+
+import './App.css'
 
 class App extends Component {
 
@@ -10,8 +11,10 @@ class App extends Component {
         return (
             <>
                 <h1 className="mb-2">Collection Hero</h1>
-                <Link to="/">Dashboard</Link>
-                <Link to="/collection">Collection</Link>
+                <div class="mb-4">
+                    <Link className='inline-block mr-2' to="/">Dashboard</Link>
+                    <Link to="/collection">Collection</Link>
+                </div>
                 <Route exact path='/' component={Dashboard}/>
                 <Route path='/collection' component={Collection}/>
             </>
