@@ -19,6 +19,12 @@ class Dashboard extends Component {
         })
     }
 
+    save = () => {
+        axios.post('/api/save-config', {config: this.state.chips}).then(res => {
+            console.log(res)
+        })
+    }
+
     setChips = chips => this.setState({chips})
 
     componentDidMount() {
@@ -26,6 +32,11 @@ class Dashboard extends Component {
         axios.get('/api/mapping').then(res => {
             let suggs = Object.keys(res.data.product.properties);
             this.setState({suggestions: suggs})
+        })
+        
+        axios.get('/api/get-config').then(res => {
+            console.log(res)
+            this.setState({chips: res.data.config})
         })
     }
 
@@ -39,10 +50,13 @@ class Dashboard extends Component {
                         {this.state.loading ? 'Working...' : 'Sync'}
                     </button>
                 </div>
-                <Chips value={this.state.chips}
-                    onChange={this.setChips}
-                    suggestions={this.state.suggestions}
-                />
+                <div className="mb-2">
+                    <Chips value={this.state.chips}
+                        onChange={this.setChips}
+                        suggestions={this.state.suggestions}
+                    />
+                </div>
+                <button className={styles.btn} onClick={this.save} >Save</button>
             </div>
         )
     }

@@ -11,7 +11,7 @@ class App extends Component {
         return (
             <>
                 <h1 className="mb-2">Collection Hero</h1>
-                <div class="mb-4">
+                <div className="mb-4">
                     <Link className='inline-block mr-2' to="/">Dashboard</Link>
                     <Link to="/collection">Collection</Link>
                 </div>
