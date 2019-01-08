@@ -8,6 +8,7 @@ class Collection extends Component {
 
     state = {
         products: [],
+        filters: [],
         count: 0,
         per_page: 6,
         active_page: 1,
@@ -20,6 +21,11 @@ class Collection extends Component {
         axios.get(`/api/products?limit=${this.state.per_page}`).then(res => {
             this.setState(res.data)
             this.setState({loading: false})
+        })
+
+        axios.get('/api/user-config').then(res => {
+            console.log(res)
+            this.setState({filters: res.data.config})
         })
     }
 

@@ -7,8 +7,31 @@ class Dashboard extends Component {
 
     state = {
         loading: true,
+        syncing: false,
+        saving: false,
         chips: [],
         suggestions: []
+    }
+
+    componentDidMount() {
+        let fetch_array = [
+            axios.get('/api/mapping'),
+            axios.get('/api/user-config')
+        ]
+
+        Promise.all(fetch_array).then(res => {
+            console.log(res)
+
+            let suggs = Object.keys(res[0].data.product.properties);
+            suggs.splice(suggs.indexOf('options'), 1);
+            this.setState({
+                suggestions: [...suggs, 'option 1', 'option 2', 'option 3'],
+                chips: res[1].data.config.filters,
+                loading: false
+            })
+
+        })
+        
     }
 
     sync = () => {
@@ -20,25 +43,15 @@ class Dashboard extends Component {
     }
 
     save = () => {
-        axios.post('/api/save-config', {config: this.state.chips}).then(res => {
+        this.setState({saving: true})
+        axios.post('/api/user-config', {config: {filters: this.state.chips}}).then(res => {
             console.log(res)
+            this.setState({saving: false})
         })
     }
 
     setChips = chips => this.setState({chips})
 
-    componentDidMount() {
-        this.setState({loading: false})
-        axios.get('/api/mapping').then(res => {
-            let suggs = Object.keys(res.data.product.properties);
-            this.setState({suggestions: suggs})
-        })
-        
-        axios.get('/api/get-config').then(res => {
-            console.log(res)
-            this.setState({chips: res.data.config})
-        })
-    }
 
     render() {
 
@@ -47,7 +60,7 @@ class Dashboard extends Component {
                 <h2>Dashboard</h2>
                 <div className="my-2">
                     <button className={styles.btn} onClick={this.sync}>
-                        {this.state.loading ? 'Working...' : 'Sync'}
+                        {this.state.syncing ? 'Working...' : 'Sync'}
                     </button>
                 </div>
                 <div className="mb-2">
@@ -56,7 +69,7 @@ class Dashboard extends Component {
                         suggestions={this.state.suggestions}
                     />
                 </div>
-                <button className={styles.btn} onClick={this.save} >Save</button>
+                <button className={styles.btn} onClick={this.save} >{this.state.saving ? 'Saving...' : 'Save'}</button>
             </div>
         )
     }
