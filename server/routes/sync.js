@@ -92,7 +92,6 @@ router.get('/', (req, res) => {
         })
         
         Promise.all(collections).then(values => {
-            // console.log(values)
             let products = [].concat(...values.filter(item => item.length))
             es_client.bulk({
                 body: products

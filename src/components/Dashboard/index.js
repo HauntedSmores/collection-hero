@@ -35,10 +35,10 @@ class Dashboard extends Component {
     }
 
     sync = () => {
-        this.setState({loading: true})
+        this.setState({syncing: true})
         axios.get('/api/sync').then(res => {
             console.log(res)
-            this.setState({loading: false})
+            this.setState({syncing: false})
         })
     }
 

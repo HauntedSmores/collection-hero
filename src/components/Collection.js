@@ -1,8 +1,12 @@
 import React, { Component } from 'react'
+import { withRouter } from 'react-router-dom'
+import { connect } from 'react-redux'
 import Grid from './Grid'
 import Filters from './Filters'
 import Pagination from './Pagination'
 import axios from 'axios'
+import { http } from '../utils'
+import { throws } from 'assert';
 
 class Collection extends Component {
 
@@ -15,31 +19,20 @@ class Collection extends Component {
         loading: true
     }
 
-    fetchProducts = this.fetchProducts.bind(this);
+    fetchProducts = this.fetchProducts.bind(this)
 
     componentDidMount() {
-        axios.get(`/api/products?limit=${this.state.per_page}`).then(res => {
-            this.setState(res.data)
-            this.setState({loading: false})
-        })
-
-        axios.get('/api/user-config').then(res => {
-            console.log(res)
-            this.setState({filters: res.data.config})
-        })
+        this.fetchProducts(1)
     }
 
     fetchProducts(page) {
         this.setState({active_page: page, loading: true})
-        
+        let handle = this.props.match.params.handle
         if (page) {
-            axios.get(`/api/products?page=${page}&limit=${this.state.per_page}`).then(res => {
-                this.setState(res.data)
-                this.setState({loading: false})
-            })
-        } else {
-            axios.get('/api/products').then(res => {
-                this.setState(res.data)
+            axios.get(`/api/collection/${handle}?page=${page}&limit=${this.state.per_page}`).then(res => {
+                console.log(res)
+                let products = res.data.hits.map(hit => hit._source)
+                this.setState({count: res.data.total, products})
                 this.setState({loading: false})
             })
         }
@@ -51,7 +44,7 @@ class Collection extends Component {
                 <h2 className="mb-2">Collection Title</h2>
 
                 <div className="flex">
-                    <Filters/>
+                    { this.props.config ? <Filters filters={this.props.config.filters}/> : 'Loading...'}
                     <div className="w-full">
                         { this.state.loading ? <p>Loading...</p> : (
                             <>
@@ -70,4 +63,8 @@ class Collection extends Component {
     }
 }
 
-export default Collection;
+function mapState(state) {
+    return { config: state.config }
+}
+export default withRouter(connect(mapState)(Collection))
+// export default Collection

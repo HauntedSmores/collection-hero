@@ -3,6 +3,7 @@ import body_parser from 'body-parser'
 import user_config from './routes/user-config'
 import sync from './routes/sync'
 import products from './routes/products'
+import collection from './routes/collection'
 import { es_client } from './utils'
 
 
@@ -17,6 +18,7 @@ app.use('/api/sync', sync)
 app.use('/api/products', products)
 
 app.use('/api/user-config', user_config)
+app.use('/api/collection', collection)
 
 app.get('/api/filter', (req, res) => {
     es_client.search({
