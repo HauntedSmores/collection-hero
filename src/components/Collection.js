@@ -29,7 +29,7 @@ class Collection extends Component {
         this.setState({active_page: page, loading: true})
         let handle = this.props.match.params.handle
         if (page) {
-            axios.get(`/api/collection/${handle}?page=${page}&limit=${this.state.per_page}`).then(res => {
+            axios.get(`/api/collections/${handle}?page=${page}&limit=${this.state.per_page}`).then(res => {
                 console.log(res)
                 let products = res.data.hits.map(hit => hit._source)
                 this.setState({count: res.data.total, products})

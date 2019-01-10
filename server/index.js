@@ -18,7 +18,7 @@ app.use('/api/sync', sync)
 app.use('/api/products', products)
 
 app.use('/api/user-config', user_config)
-app.use('/api/collection', collection)
+app.use('/api/collections', collection)
 
 app.get('/api/filter', (req, res) => {
     es_client.search({
@@ -31,7 +31,6 @@ app.get('/api/filter', (req, res) => {
             }
         }
     }).then(data => {
-        console.log(data)
         res.status(200).send(data)
     })
 })

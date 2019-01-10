@@ -8,51 +8,43 @@ import {
 const router = express.Router()
 
 router.get('/', (req, res) => {
-    // http.get('products/count.json').then(count_res => {
-    //     let pages = Math.ceil(count_res.data.count / 250)
+    let get_all_products = http.get('products/count.json').then(count_res => {
+        let pages = Math.ceil(count_res.data.count / 250)
 
-    //     let requests = []
-    //     for (let i = 1; i <= pages; i++) {
-    //         let request = http.get('products.json', {
-    //             params: {
-    //                 limit: 250,
-    //                 page: i
-    //             }
-    //         }).catch(err => console.log(err))
-    //         requests.push(request)
-    //     }
+        let requests = []
+        for (let i = 1; i <= pages; i++) {
+            let request = http.get('products.json', {
+                params: {
+                    limit: 250,
+                    page: i
+                }
+            }).catch(err => console.log(err))
+            requests.push(request)
+        }
 
-    //     Promise.all(requests).then(responses => {
-    //         //   console.log(...responses)
-    //         let products = [].concat(...responses.map(item => {
-    //             return [].concat(...item.data.products.map(item => [
-    //                 { index: { _index: 'products', _type: 'product', _id: item.id } },
-    //                 item
-    //             ]))
-    //         }))
-
-    //         es_client.bulk({
-    //             body: products
-    //         }, (err, index_response) => {
-    //             if (err) {
-    //                 res.status(500).send(err)
-    //             } else {
-    //                 res.status(200).send(index_response)
-    //             }
-    //         })
-
-
-
-    //     }).catch(err => console.error(err))
-
-    // }).catch(err => console.error(err))
-
+        return Promise.all(requests).then(responses => {
+            return [].concat(...responses.map(item => {
+                return [].concat(...item.data.products.map(item => [
+                    { index: { _index: 'products', _type: 'product', _id: item.id } },
+                    item
+                ]))
+            }))
+            
+        }).catch(err => console.error(err))
+        
+    }).catch(err => console.error(err))
+    
     let get_collections = [http.get('custom_collections.json'), http.get('smart_collections.json')]
-
-    Promise.all(get_collections).then(collection_sets => {
+    
+    let get_collection_products = Promise.all(get_collections).then(collection_sets => {
         let collections = [].concat(...collection_sets.map(col => {
             return col.data.smart_collections || col.data.custom_collections
         }))
+        
+        let collection_updates = [].concat(...collections.map(collection => [
+            { index: { _index: 'collections', _type: 'collection', _id: collection.id } },
+            collection
+        ]))
         
         collections = collections.map(collection => {
             return http.get('products/count.json', {
@@ -74,14 +66,12 @@ router.get('/', (req, res) => {
                     }
                     
                     return Promise.all(requests).then(responses => {
-                        let products = [].concat(...responses.map(item => {
+                        return [].concat(...responses.map(item => {
                             return [].concat(...item.data.products.map(item => [
                                 { index: { _index: `collection_${collection.handle}`, _type: 'product', _id: item.id } },
                                 item
                             ]))
                         }))
-
-                        return products
                         
                     }).catch(err => console.error(err))
                 } else {
@@ -91,21 +81,25 @@ router.get('/', (req, res) => {
             
         })
         
-        Promise.all(collections).then(values => {
-            let products = [].concat(...values.filter(item => item.length))
-            es_client.bulk({
-                body: products
-            }, (err, index_response) => {
-                if (err) {
-                    console.log(err)
-                } else {
-                    console.log(index_response)
-                    res.status(200).send(index_response)
-                }
-            })
+        return Promise.all(collections).then(values => {
+            return collection_updates.concat(...values.filter(item => item.length))
         })
-
+        
     }).catch(err => console.error(err))
+    
+    Promise.all([get_all_products, get_collection_products]).then(values => {
+        es_client.bulk({
+            body: [].concat(...values)
+        }, (err, index_response) => {
+            if (err) {
+                res.status(500).send(err)
+            } else {
+                res.status(200).send(index_response)
+            }
+        })
+    })
+
+
 })
 
 export default router
