@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import Chips from 'react-chips'
+import FilterList from './FilterList/FilterList'
 import styles from './Dashboard.module.css'
 import axios from 'axios'
 
@@ -9,8 +9,8 @@ class Dashboard extends Component {
         loading: true,
         syncing: false,
         saving: false,
-        chips: [],
-        suggestions: []
+        filter_options: [],
+        selected_filters: []
     }
 
     componentDidMount() {
@@ -22,11 +22,10 @@ class Dashboard extends Component {
         Promise.all(fetch_array).then(res => {
             console.log(res)
 
-            let suggs = Object.keys(res[0].data.product.properties);
-            suggs.splice(suggs.indexOf('options'), 1);
+            let options = Object.keys(res[0].data.product.properties);
+            options.splice(options.indexOf('options'), 1);
             this.setState({
-                suggestions: [...suggs, 'option 1', 'option 2', 'option 3'],
-                chips: res[1].data.config.filters,
+                filter_options: [...options, 'option 1', 'option 2', 'option 3'],
                 loading: false
             })
 
@@ -42,12 +41,30 @@ class Dashboard extends Component {
         })
     }
 
+    propTest = (filter, $event) => {
+        console.log($event.target.checked)
+
+        let filters = [...this.state.selected_filters]
+        let exists = filters.includes(filter)
+
+        console.log(filters, exists)
+        if ($event.target.checked && !exists) {
+            console.log('Checked and does not exist yet')
+            this.setState({selected_filters: [filter, ...filters]})
+        } else if (exists) {
+            console.log('Unchecked and exist already')
+            let index = filters.indexOf(filter)
+            filters.splice(index,1)
+            this.setState({selected_filters: filters})
+        }
+    }
+
     save = () => {
-        this.setState({saving: true})
-        axios.post('/api/user-config', {config: {filters: this.state.chips}}).then(res => {
-            console.log(res)
-            this.setState({saving: false})
-        })
+        // this.setState({saving: true})
+        // axios.post('/api/user-config', {config: {filters: this.state.chips}}).then(res => {
+        //     console.log(res)
+        //     this.setState({saving: false})
+        // })
     }
 
     setChips = chips => this.setState({chips})
@@ -57,19 +74,14 @@ class Dashboard extends Component {
 
         return (
             <div className={styles.dashboard}>
-                <h2>Dashboard</h2>
-                <div className="my-2">
-                    <button className={styles.btn} onClick={this.sync}>
-                        {this.state.syncing ? 'Working...' : 'Sync'}
-                    </button>
-                </div>
-                <div className="mb-2">
-                    <Chips value={this.state.chips}
-                        onChange={this.setChips}
-                        suggestions={this.state.suggestions}
-                    />
-                </div>
-                <button className={styles.btn} onClick={this.save} >{this.state.saving ? 'Saving...' : 'Save'}</button>
+                <Link className='inline-block mr-2' to="/">Dashboard</Link>
+                <h2 className="mb-2">Dashboard</h2>
+                <p className="mb-2">Sync products from Shopify to ElasticSearch</p>
+                <button className="btn mb-4" onClick={this.sync}>
+                    {this.state.syncing ? 'Working...' : 'Sync'}
+                </button>
+                <FilterList filters={this.state.filter_options} onSelect={this.propTest.bind(this)}/>
+                <button className="btn" onClick={this.save} >{this.state.saving ? 'Saving...' : 'Save'}</button>
             </div>
         )
     }

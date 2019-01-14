@@ -1,0 +1,7 @@
+.btn {
+  background-color: rgb(60, 137, 236);
+  padding: 0.5rem  1rem;
+  color: white;
+  text-transform: uppercase;
+  border-radius: 3px;
+}

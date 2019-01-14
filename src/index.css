@@ -1,5 +1,6 @@
 /* @import '~@shopify/polaris/styles.css'; */
 @import './styles/tailwind.css';
+@import './styles/buttons.css';
 
 body {
   margin: 0;

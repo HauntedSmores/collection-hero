@@ -22,8 +22,7 @@ class App extends Component {
             <>
                 <h1 className="mb-2">Collection Hero</h1>
                 <div className="mb-4">
-                    <Link className='inline-block mr-2' to="/">Dashboard</Link>
-                    <Link to="/collections/men">Collection</Link>
+                    <Link to="/collections/men">Preview Collection</Link>
                 </div>
                 <Route exact path='/' component={Dashboard}/>
                 <Route path='/collections/:handle' component={Collection}/>
