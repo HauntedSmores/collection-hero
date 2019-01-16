@@ -10,10 +10,13 @@ import './App.css'
 
 class App extends Component {
 
+    state = { loading: true }
+
     componentDidMount() {
         http.get('/user-config').then(res =>  {
             console.log(update_config(res.data.config))
             this.props.dispatch(update_config(res.data.config))
+            this.setState({loading: false})
         })
     }
 
@@ -21,11 +24,12 @@ class App extends Component {
         return (
             <>
                 <h1 className="mb-2">Collection Hero</h1>
-                <div className="mb-4">
-                    <Link to="/collections/men">Preview Collection</Link>
-                </div>
-                <Route exact path='/' component={Dashboard}/>
-                <Route path='/collections/:handle' component={Collection}/>
+                { this.state.loading ? null : (
+                    <>
+                        <Route exact path='/' component={Dashboard}/>
+                        <Route path='/collections/:handle' component={Collection}/>
+                    </>
+                )}
             </>
         )
     }

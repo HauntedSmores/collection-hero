@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { withRouter } from 'react-router-dom'
+import { Link, withRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
 import Grid from './Grid'
 import Filters from './Filters'
@@ -32,8 +32,7 @@ class Collection extends Component {
             axios.get(`/api/collections/${handle}?page=${page}&limit=${this.state.per_page}`).then(res => {
                 console.log(res)
                 let products = res.data.hits.map(hit => hit._source)
-                this.setState({count: res.data.total, products})
-                this.setState({loading: false})
+                this.setState({count: res.data.total, products, loading: false})
             })
         }
     }
@@ -41,10 +40,11 @@ class Collection extends Component {
     render() {
         return (
             <div>
+                <Link to="/">Dashboard</Link>
                 <h2 className="mb-2">Collection Title</h2>
 
                 <div className="flex">
-                    { this.props.config ? <Filters filters={this.props.config.filters}/> : 'Loading...'}
+                    <Filters filters={this.props.config.filters}/>
                     <div className="w-full">
                         { this.state.loading ? <p>Loading...</p> : (
                             <>
@@ -53,7 +53,8 @@ class Collection extends Component {
                                     count={this.state.count}
                                     perPage={this.state.per_page}
                                     getPage={this.fetchProducts}
-                                    activePage={this.state.active_page}/>
+                                    activePage={this.state.active_page}
+                                />
                             </>
                         )}
                     </div>

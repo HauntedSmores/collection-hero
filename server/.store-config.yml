@@ -1,3 +1,14 @@
 config:
   filters:
+    - vendor
+    - admin_graphql_api_id
+    - body_html
+    - created_at
+    - handle
+    - id
     - product_type
+    - tags
+    - title
+    - option 1
+    - option 2
+    - option 3

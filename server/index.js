@@ -4,6 +4,7 @@ import user_config from './routes/user-config'
 import sync from './routes/sync'
 import products from './routes/products'
 import collection from './routes/collection'
+import aggregations from './routes/aggregations'
 import { es_client } from './utils'
 
 
@@ -18,7 +19,10 @@ app.use('/api/sync', sync)
 app.use('/api/products', products)
 
 app.use('/api/user-config', user_config)
+
 app.use('/api/collections', collection)
+
+app.use('/api/aggregations', aggregations)
 
 app.get('/api/filter', (req, res) => {
     es_client.search({

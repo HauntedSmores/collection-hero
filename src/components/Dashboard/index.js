@@ -1,7 +1,10 @@
 import React, { Component } from 'react'
+import { Link, withRouter } from 'react-router-dom'
+import { connect } from 'react-redux'
 import FilterList from './FilterList/FilterList'
 import styles from './Dashboard.module.css'
 import axios from 'axios'
+import { update_config } from '../../store/actions'
 
 class Dashboard extends Component {
 
@@ -14,18 +17,15 @@ class Dashboard extends Component {
     }
 
     componentDidMount() {
-        let fetch_array = [
-            axios.get('/api/mapping'),
-            axios.get('/api/user-config')
-        ]
 
-        Promise.all(fetch_array).then(res => {
+       axios.get('/api/mapping').then(res => {
             console.log(res)
 
-            let options = Object.keys(res[0].data.product.properties);
+            let options = Object.keys(res.data.product.properties);
             options.splice(options.indexOf('options'), 1);
             this.setState({
                 filter_options: [...options, 'option 1', 'option 2', 'option 3'],
+                selected_filters: this.props.user_config.filters,
                 loading: false
             })
 
@@ -41,7 +41,7 @@ class Dashboard extends Component {
         })
     }
 
-    propTest = (filter, $event) => {
+    selectFilter = (filter, $event) => {
         console.log($event.target.checked)
 
         let filters = [...this.state.selected_filters]
@@ -59,32 +59,48 @@ class Dashboard extends Component {
         }
     }
 
-    save = () => {
-        // this.setState({saving: true})
-        // axios.post('/api/user-config', {config: {filters: this.state.chips}}).then(res => {
-        //     console.log(res)
-        //     this.setState({saving: false})
-        // })
+    selectAll = () => {
+        this.setState({selected_filters: this.state.filter_options})
+    }
+    
+    clearAll = () => {
+        this.setState({selected_filters: []})
     }
 
-    setChips = chips => this.setState({chips})
-
+    save = () => {
+        this.setState({saving: true})
+        axios.post('/api/user-config', {config: {filters: this.state.selected_filters}}).then(res => {
+            console.log(res)
+            this.setState({saving: false})
+            this.props.dispatch(update_config({filters: this.state.selected_filters}))
+        })
+    }
 
     render() {
 
         return (
             <div className={styles.dashboard}>
-                <Link className='inline-block mr-2' to="/">Dashboard</Link>
+                <Link className='inline-block mr-2' to="/collections/men">Preview Collection</Link>
                 <h2 className="mb-2">Dashboard</h2>
                 <p className="mb-2">Sync products from Shopify to ElasticSearch</p>
                 <button className="btn mb-4" onClick={this.sync}>
                     {this.state.syncing ? 'Working...' : 'Sync'}
                 </button>
-                <FilterList filters={this.state.filter_options} onSelect={this.propTest.bind(this)}/>
+                <FilterList
+                    filters={this.state.filter_options}
+                    selectedFilters={this.state.selected_filters}
+                    onSelect={this.selectFilter.bind(this)}
+                    selectAll={this.selectAll}
+                    clearAll={this.clearAll}
+                />
                 <button className="btn" onClick={this.save} >{this.state.saving ? 'Saving...' : 'Save'}</button>
             </div>
         )
     }
 }
 
-export default Dashboard;
+function mapState(state) {
+    return { user_config: state.config }
+}
+
+export default withRouter(connect(mapState)(Dashboard))
