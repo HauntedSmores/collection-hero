@@ -8,7 +8,7 @@ export const shop_name = process.env.SHOP_NAME
 
 export const es_client = new elasticsearch.Client({
     host: 'localhost:9200',
-    log: 'trace'
+    // log: 'trace'
 });
 
 export const http = axios.create({

@@ -5,7 +5,7 @@ import Grid from './Grid'
 import Filters from './Filters'
 import Pagination from './Pagination'
 import axios from 'axios'
-import { http } from '../utils'
+import { http } from '../../utils'
 import { throws } from 'assert';
 
 class Collection extends Component {
@@ -23,6 +23,10 @@ class Collection extends Component {
 
     componentDidMount() {
         this.fetchProducts(1)
+        let aggs = this.props.config
+        // http.post('/api/aggregations', res => {
+        //     console.log(res)
+        // })
     }
 
     fetchProducts(page) {
@@ -40,8 +44,10 @@ class Collection extends Component {
     render() {
         return (
             <div>
-                <Link to="/">Dashboard</Link>
-                <h2 className="mb-2">Collection Title</h2>
+                <div className="mb-4">
+                    <Link to="/">Dashboard</Link>
+                </div>
+                <h2 className="mb-4">Collection Title</h2>
 
                 <div className="flex">
                     <Filters filters={this.props.config.filters}/>
@@ -68,4 +74,3 @@ function mapState(state) {
     return { config: state.config }
 }
 export default withRouter(connect(mapState)(Collection))
-// export default Collection

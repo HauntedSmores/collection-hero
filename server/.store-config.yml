@@ -1,14 +1,20 @@
 config:
   filters:
-    - vendor
-    - admin_graphql_api_id
-    - body_html
-    - created_at
-    - handle
-    - id
-    - product_type
-    - tags
-    - title
-    - option 1
-    - option 2
-    - option 3
+    - name: product_type
+      label: Product Type
+      enabled: true
+    - name: option1
+      label: Color
+      enabled: false
+    - name: option2
+      label: option2
+      enabled: false
+    - name: option3
+      label: option3
+      enabled: false
+    - name: vendor
+      label: vendor
+      enabled: false
+    - name: tags
+      label: tags
+      enabled: false
