@@ -1,7 +1,7 @@
 config:
   filters:
     - name: product_type
-      label: Product Type
+      label: Product
       enabled: true
     - name: option1
       label: Color
@@ -10,7 +10,7 @@ config:
       label: option2
       enabled: false
     - name: option3
-      label: option3
+      label: optio
       enabled: false
     - name: vendor
       label: vendor

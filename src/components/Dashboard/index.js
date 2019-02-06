@@ -33,7 +33,7 @@ class Dashboard extends Component {
                 <button className="btn mb-4" onClick={this.sync}>
                     {this.state.syncing ? 'Working...' : 'Sync'}
                 </button>
-                <FilterList selectedFilters={this.props.user_config.filters} dispatch={this.props.dispatch}/>
+                <FilterList filters={this.props.user_config.filters} dispatch={this.props.dispatch}/>
             </div>
         )
     }

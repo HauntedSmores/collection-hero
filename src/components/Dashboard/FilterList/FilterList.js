@@ -2,82 +2,62 @@ import React, { Component } from 'react'
 import styles from './FilterList.module.css'
 import axios from 'axios'
 import { update_config } from '../../../store/actions'
+import Filter from './Filter/Filter'
 
 class FilterList extends Component {
 
   state = {
-    loading: true,
-    saving: false,
-    filter_options: [
-      'product_type',
-      'option1',
-      'option2',
-      'option3',
-      'vendor',
-      'tags'
-    ]
+    saving: false
   }
 
   componentDidMount() {
-    let filters = this.state.filter_options.map(option => {
-      let selected_filter = this.props.selectedFilters.find(filter => filter.name === option)
-      console.log(selected_filter)
-
-      return selected_filter ? { ...selected_filter, enabled: true } : {
-        name: option,
-        label: option,
-        enabled: false
-      }
-    })
-
-    this.setState({loading: false, filter_options: filters})
+    // this.state.filters = [...this.props.filters]
   }
 
   setLabel(filter, $event) {
     console.log($event.target.value)
-    let filters = [ ...this.state.filter_options ]
+    let filters = [ ...this.props.filters ]
     let index = filters.indexOf(filter)
     let temp_filter = filters[index]
     temp_filter.label = $event.target.value
-    this.setState({ filter_options: filters })
+    this.setState({ filters: filters })
   }
 
   onSelect(option, $event) {
-    // console.log(option)
+    console.log($event)
     console.dir($event.target.checked)
-    let filters = [ ...this.state.filter_options ]
+    let filters = [ ...this.props.filters ]
     let index = filters.indexOf(option)
     filters[index].enabled = $event.target.checked
-    this.setState({ filter_options: filters })
+    this.setState({ filters })
   }
 
   selectAll = () => {
-    let filters = this.state.filter_options.map(filter => {
+    let filters = this.props.filters.map(filter => {
       return { ...filter, enabled: true }
     })
-    this.setState({filter_options: filters})
+    this.setState({filters})
   }
 
   clearAll = () => {
-    let filters = this.state.filter_options.map(filter => {
+    let filters = this.props.filters.map(filter => {
       return { ...filter, enabled: false }
     })
-    this.setState({filter_options: filters})
+    this.setState({filters})
   }
 
   save = () => {
-      this.setState({saving: true})
-      axios.post('/api/user-config', {config: {filters: this.state.filter_options}}).then(res => {
-          console.log(res)
-          this.setState({saving: false})
-          this.props.dispatch(update_config({filters: this.state.filter_options}))
+      // this.setState({saving: true})
+      axios.post('/api/user-config', {config: {filters: this.props.filters}}).then(res => {
+          console.log(update_config({filters: this.props.filters}))
+          // this.setState({saving: false})
+          this.props.dispatch(update_config({filters: this.props.filters}))
       })
   }
 
   render() {
 
-    let options = this.state.filter_options
-    let loading = this.state.loading
+    let options = this.props.filters
     
     return (
       <>
@@ -86,17 +66,14 @@ class FilterList extends Component {
           <button className="btn mr-2" onClick={this.clearAll}>Clear All</button>
           <button className="btn" onClick={this.selectAll}>Select All</button>
         </div>
-        { loading ? null :
-          options.map(option => {
-            return (
-              <div className="flex mb-4">
-                <p className="mr-2">{option.name}</p>
-                <input className="mr-4" type="checkbox" onChange={this.onSelect.bind(this, option)} checked={option.enabled}/>
-                <input type="text" onChange={this.setLabel.bind(this, option)} value={option.label}/>
-              </div>
-            )
-          })
-        }
+        {options.map(option => {
+          return (
+            <div className="flex mb-4">
+              <Filter filter={option} filterSelect={this.onSelect.bind(this, option)}
+              setLabel={this.setLabel.bind(this, option)}></Filter>
+            </div>
+          )
+        })}
         <button className="btn" onClick={this.save} >{this.state.saving ? 'Saving...' : 'Save'}</button>
       </>
     )
