@@ -22,7 +22,7 @@ class Filters extends Component {
             <div className={ styles.filters }>
                 <h4 className="mb-2">Filters</h4>
                 {filters.map(filter => {
-                    return <p>{filter}</p>
+                    return filter.enabled ? <p>{filter.label}</p> : null
                 })}
             </div>
         )

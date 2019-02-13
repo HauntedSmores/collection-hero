@@ -7,57 +7,53 @@ import Filter from './Filter/Filter'
 class FilterList extends Component {
 
   state = {
-    saving: false
-  }
-
-  componentDidMount() {
-    // this.state.filters = [...this.props.filters]
+    saving: false,
+    filters: this.props.filters
   }
 
   setLabel(filter, $event) {
-    console.log($event.target.value)
-    let filters = [ ...this.props.filters ]
-    let index = filters.indexOf(filter)
-    let temp_filter = filters[index]
+    let filters = this.state.filters.map(filter => {
+      return {...filter}
+    })
+    let temp_filter = filters.find(item => item.name == filter.name)
     temp_filter.label = $event.target.value
-    this.setState({ filters: filters })
+    this.setState({ filters })
   }
-
-  onSelect(option, $event) {
-    console.log($event)
-    console.dir($event.target.checked)
-    let filters = [ ...this.props.filters ]
-    let index = filters.indexOf(option)
-    filters[index].enabled = $event.target.checked
+  
+  onSelect(filter, $event) {
+    let filters = this.state.filters.map(filter => {
+      return {...filter}
+    })
+    let temp_filter = filters.find(item => item.name == filter.name)
+    temp_filter.enabled = $event.target.checked
     this.setState({ filters })
   }
 
   selectAll = () => {
-    let filters = this.props.filters.map(filter => {
+    let filters = this.state.filters.map(filter => {
       return { ...filter, enabled: true }
     })
     this.setState({filters})
   }
 
   clearAll = () => {
-    let filters = this.props.filters.map(filter => {
+    let filters = this.state.filters.map(filter => {
       return { ...filter, enabled: false }
     })
     this.setState({filters})
   }
 
   save = () => {
-      // this.setState({saving: true})
-      axios.post('/api/user-config', {config: {filters: this.props.filters}}).then(res => {
-          console.log(update_config({filters: this.props.filters}))
-          // this.setState({saving: false})
-          this.props.dispatch(update_config({filters: this.props.filters}))
+      this.setState({saving: true})
+      axios.post('/api/user-config', {config: {filters: this.state.filters}}).then(res => {
+          this.setState({saving: false})
+          this.props.dispatch(update_config({filters: this.state.filters}))
       })
   }
 
   render() {
 
-    let options = this.props.filters
+    let options = this.state.filters
     
     return (
       <>

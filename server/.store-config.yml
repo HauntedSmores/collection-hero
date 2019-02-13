@@ -1,20 +1,20 @@
 config:
   filters:
     - name: product_type
-      label: Product
+      label: Category
       enabled: true
     - name: option1
-      label: Color
-      enabled: false
+      label: Material
+      enabled: true
     - name: option2
       label: option2
-      enabled: false
+      enabled: true
     - name: option3
       label: optio
-      enabled: false
+      enabled: true
     - name: vendor
       label: vendor
-      enabled: false
+      enabled: true
     - name: tags
       label: tags
-      enabled: false
+      enabled: true
